@@ -1,0 +1,27 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- script: |
+    echo Restore dependencies
+    dotnet restore
+  displayName: 'Restore dependencies'
+
+- script: |
+    echo Build project
+    dotnet build --configuration Release --no-restore
+  displayName: 'Build project'
+
+- script: |
+    echo Run tests
+    dotnet test --no-restore --verbosity normal
+  displayName: 'Run tests'
